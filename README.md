@@ -73,7 +73,9 @@ data:
 
 VOICEVOX Engine の `speaker` パラメータは、実際には **スタイル ID**（`style_id`）です。
 
-> `speaker` という名前は後方互換性のために残っています。実体は `/speakers` エンドポイントが返すスタイル情報の `id` です。— VOICEVOX Engine ドキュメント
+> `speaker` という名前は後方互換性のために残っています。実体は `/speakers` エンドポイントが返すスタイル情報の `id` です。— [VOICEVOX Engine README](https://github.com/VOICEVOX/voicevox_engine#%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%B3api)
+
+以下のリストは [`custom_components/voicevox_tts/config_flow.py`](custom_components/voicevox_tts/config_flow.py) の `SPEAKERS` 定義に基づきます。
 
 | スタイル ID | キャラクター |
 |:-:|---|
