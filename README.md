@@ -8,7 +8,7 @@ Home Assistant カスタムインテグレーションです。[VOICEVOX Engine]
 
 - VOICEVOX Engine を HA の TTS エンジンとして利用
 - アドオン起動時に **自動検知**（Zeroconf / mDNS）
-- UI から話者を選択してセットアップ完了（`configuration.yaml` の編集不要）
+- UI からスタイルを選択してセットアップ完了（`configuration.yaml` の編集不要）
 
 ## インストール
 
@@ -25,31 +25,79 @@ Home Assistant カスタムインテグレーションです。[VOICEVOX Engine]
 
 ## セットアップ
 
-### 自動検知（VOICEVOX Engine アドオン使用時）
+### 方法 1 — 自動検知（VOICEVOX Engine アドオン使用時）
 
-[VOICEVOX Engine アドオン](https://github.com/hgn32/ha-addons) を起動すると mDNS でアドバタイズされ、HA が自動で検出します。
+[VOICEVOX Engine アドオン](https://github.com/hgn32/ha-addons) を起動すると mDNS でアドバタイズされ、Home Assistant が自動で検出します。
 
-**設定 → 通知** に「VOICEVOX Engine が見つかりました」と表示されたら、クリックして話者を選択するだけです。
+1. **設定 → 通知** に「VOICEVOX Engine が見つかりました」と表示されたらクリック
+2. 使用するスタイルを選択して「送信」
+3. 完了 — TTS エンティティが自動的に追加されます
 
-### 手動セットアップ
+### 方法 2 — 手動セットアップ
 
-**設定 → デバイスとサービス → インテグレーションを追加** から「VOICEVOX TTS」を検索し、ホスト・ポート・話者を入力してください。
+VOICEVOX Engine が別ホストで動いている場合や自動検知されない場合に使います。
 
-## 話者番号
+1. **設定 → デバイスとサービス → インテグレーションを追加**
+2. 「VOICEVOX TTS」を検索して選択
+3. 以下の項目を入力して「送信」
 
-| 番号 | 話者 |
+| 項目 | 説明 | デフォルト |
+|---|---|---|
+| ホスト | VOICEVOX Engine のホスト名または IP アドレス | `127.0.0.1` |
+| ポート | VOICEVOX Engine のポート番号 | `50021` |
+| スタイル | 使用する音声スタイル | 雨晴はう（ノーマル） |
+
+### TTS の使い方
+
+インテグレーションを追加すると `tts.voicevox_tts_*` エンティティが作成されます。
+オートメーションや音声アシスタントから次のように呼び出せます。
+
+```yaml
+service: tts.speak
+target:
+  entity_id: tts.voicevox_tts_192_168_1_10_50021
+data:
+  media_player_entity_id: media_player.living_room
+  message: "おはようございます"
+```
+
+呼び出し時に `options.speaker` でスタイル ID を指定すると、エントリ設定を上書きしてスタイルを切り替えられます。
+
+```yaml
+data:
+  options:
+    speaker: 3   # ずんだもん（ノーマル）
+```
+
+## スタイル一覧
+
+VOICEVOX Engine の `speaker` パラメータは、実際には **スタイル ID**（`style_id`）です。各キャラクターには「ノーマル」「あまあま」「ツンツン」など複数のスタイルがあり、スタイルごとに固有の ID が割り当てられています。
+
+> `speaker` という名前は後方互換性のために残っています。実体は `/speakers` エンドポイントが返すスタイル情報の `id` です。— VOICEVOX Engine ドキュメント
+
+以下は代表的なスタイルの一覧です。
+
+| スタイル ID | キャラクター / スタイル |
 |---|---|
-| 3 | ずんだもん |
-| 10 | 雨晴はう |
-| 24 | WhiteCUL |
+| 3 | ずんだもん（ノーマル） |
+| 10 | 雨晴はう（ノーマル） |
+| 24 | WhiteCUL（ノーマル） |
 | 46 | 小夜/SAYO |
-| 48 | ナースロボ＿タイプＴ |
-| 58 | 猫使ビィ |
+| 48 | ナースロボ＿タイプＴ（ノーマル） |
+| 58 | 猫使ビィ（ノーマル） |
 | 89 | Voidoll |
 
-全話者一覧は [VOICEVOX 公式サイト](https://voicevox.hiroshiba.jp/) または起動中のエンジンの `http://<host>:50021/speakers` で確認できます。
+全スタイルの一覧は [VOICEVOX 公式サイト](https://voicevox.hiroshiba.jp/) または起動中のエンジンの `/speakers` エンドポイントで確認できます。
+
+```
+http://<host>:50021/speakers
+```
 
 ## 動作要件
 
 - Home Assistant 2023.x 以上
-- VOICEVOX Engine（アドオンまたは別途起動）
+- VOICEVOX Engine（[ha-addons](https://github.com/hgn32/ha-addons) アドオンまたは別途起動）
+
+## ライセンス
+
+MIT License
