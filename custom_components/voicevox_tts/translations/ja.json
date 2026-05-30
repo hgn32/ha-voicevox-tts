@@ -6,14 +6,14 @@
         "data": {
           "host": "ホスト",
           "port": "ポート",
-          "speaker": "スタイル ID"
+          "speaker": "styles の id"
         }
       },
       "zeroconf_confirm": {
         "title": "VOICEVOX Engine を検出しました",
-        "description": "{host}:{port} で VOICEVOX Engine が見つかりました。スタイル ID を入力してください。",
+        "description": "{host}:{port} で VOICEVOX Engine が見つかりました。/speakers の styles[].id を入力してください。",
         "data": {
-          "speaker": "スタイル ID"
+          "speaker": "styles の id"
         }
       }
     },
