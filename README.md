@@ -87,7 +87,7 @@ VOICEVOX Engine の `speaker` パラメータは、実際には **スタイル I
 | 58 | 猫使ビィ |
 | 89 | Voidoll |
 
-全スタイルの一覧は [VOICEVOX 公式サイト](https://voicevox.hiroshiba.jp/) または起動中のエンジンの `/speakers` エンドポイントで確認できます。
+全スタイルの一覧は起動中のエンジンの `/speakers` エンドポイントで確認できます。
 
 ```
 http://<host>:50021/speakers
