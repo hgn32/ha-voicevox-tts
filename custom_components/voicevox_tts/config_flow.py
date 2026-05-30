@@ -7,16 +7,6 @@ from homeassistant.components.zeroconf import ZeroconfServiceInfo
 
 DOMAIN = "voicevox_tts"
 
-SPEAKERS = {
-    3: "ずんだもん",
-    10: "雨晴はう",
-    24: "WhiteCUL",
-    46: "小夜/SAYO",
-    48: "ナースロボ＿タイプＴ",
-    58: "猫使ビィ",
-    89: "Voidoll",
-}
-
 
 async def _test_connection(host: str, port: int) -> bool:
     try:
@@ -55,7 +45,7 @@ class VoicevoxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="zeroconf_confirm",
             description_placeholders={"host": self._host, "port": str(self._port)},
             data_schema=vol.Schema({
-                vol.Required("speaker", default=10): vol.In(SPEAKERS),
+                vol.Required("speaker", default=10): vol.Coerce(int),
             }),
         )
 
@@ -76,6 +66,6 @@ class VoicevoxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required("host", default="127.0.0.1"): str,
                 vol.Required("port", default=50021): int,
-                vol.Required("speaker", default=10): vol.In(SPEAKERS),
+                vol.Required("speaker", default=10): vol.Coerce(int),
             }),
         )
