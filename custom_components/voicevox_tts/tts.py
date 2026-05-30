@@ -33,6 +33,10 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
     def default_language(self) -> str:
         return "ja"
 
+    @property
+    def supported_options(self) -> list[str]:
+        return ["speaker"]
+
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict | None = None
     ) -> tuple[str, bytes]:
