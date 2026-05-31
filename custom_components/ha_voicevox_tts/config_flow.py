@@ -37,6 +37,8 @@ class VoicevoxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(f"{self._host}:{self._port}")
         self._abort_if_unique_id_configured()
 
+        self.context["title_placeholders"] = {"host": self._host}
+
         return await self.async_step_zeroconf_confirm()
 
     async def async_step_zeroconf_confirm(self, user_input=None):

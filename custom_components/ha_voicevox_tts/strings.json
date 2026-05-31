@@ -1,5 +1,6 @@
 {
   "config": {
+    "flow_title": "VOICEVOX Engine ({host})",
     "step": {
       "user": {
         "title": "VOICEVOX Engine の設定",
