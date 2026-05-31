@@ -24,6 +24,7 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
         self._speaker: int = config_entry.data.get("speaker", 10)
         self._attr_unique_id = f"{DOMAIN}_{self._host}_{self._port}"
         self._attr_name = f"VOICEVOX TTS ({self._host}:{self._port})"
+        self._attr_available = True
 
     @property
     def supported_languages(self) -> list[str]:
@@ -36,6 +37,17 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
     @property
     def supported_options(self) -> list[str]:
         return ["speaker"]
+
+    async def async_update(self) -> None:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    f"http://{self._host}:{self._port}/version",
+                    timeout=aiohttp.ClientTimeout(total=5),
+                ) as resp:
+                    self._attr_available = resp.status == 200
+        except Exception:
+            self._attr_available = False
 
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict | None = None
