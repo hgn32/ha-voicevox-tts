@@ -19,12 +19,13 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    async_add_entities([VoicevoxTTSEntity(hass, config_entry)])
+    async_add_entities([VoicevoxTTSEntity(config_entry)])
 
 
 class VoicevoxTTSEntity(TextToSpeechEntity):
-    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
-        self._hass = hass
+    _attr_should_poll = False
+
+    def __init__(self, config_entry: ConfigEntry) -> None:
         self._host: str = config_entry.data["host"]
         self._port: int = config_entry.data["port"]
         self._speaker: int = config_entry.data.get("speaker", 10)
@@ -32,12 +33,8 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
         self._attr_name = f"VOICEVOX TTS ({self._host}:{self._port})"
 
     @property
-    def should_poll(self) -> bool:
-        return False
-
-    @property
     def supported_languages(self) -> list[str]:
-        return ["ja"]
+        return ["ja", "ja-JP"]
 
     @property
     def default_language(self) -> str:
@@ -47,12 +44,23 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
     def supported_options(self) -> list[str]:
         return ["speaker"]
 
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+        _LOGGER.info(
+            "VOICEVOX TTS entity ready: %s:%s (speaker=%s)",
+            self._host, self._port, self._speaker,
+        )
+
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict | None = None
     ) -> tuple[str | None, bytes | None]:
         speaker = (options or {}).get("speaker", self._speaker)
+        _LOGGER.info(
+            "VOICEVOX TTS request: message=%r speaker=%s host=%s:%s",
+            message, speaker, self._host, self._port,
+        )
         base = f"http://{self._host}:{self._port}"
-        session = async_get_clientsession(self._hass)
+        session = async_get_clientsession(self.hass)
         try:
             async with session.post(
                 f"{base}/audio_query",
@@ -77,4 +85,5 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
             _LOGGER.error("VOICEVOX API error: %r", exc)
             return None, None
 
+        _LOGGER.info("VOICEVOX TTS audio ready: %d bytes", len(audio))
         return "wav", audio
