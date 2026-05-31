@@ -19,6 +19,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
+    _LOGGER.warning("[VOICEVOX TTS] tts.async_setup_entry called")
     async_add_entities([VoicevoxTTSEntity(config_entry)])
 
 
@@ -46,18 +47,18 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
-        _LOGGER.info(
-            "VOICEVOX TTS entity ready: %s:%s (speaker=%s)",
-            self._host, self._port, self._speaker,
+        _LOGGER.warning(
+            "[VOICEVOX TTS] entity ready: %s:%s (speaker=%s) unique_id=%s",
+            self._host, self._port, self._speaker, self._attr_unique_id,
         )
 
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict | None = None
     ) -> tuple[str | None, bytes | None]:
         speaker = (options or {}).get("speaker", self._speaker)
-        _LOGGER.info(
-            "VOICEVOX TTS request: message=%r speaker=%s host=%s:%s",
-            message, speaker, self._host, self._port,
+        _LOGGER.warning(
+            "[VOICEVOX TTS] synthesis start: message=%r speaker=%s",
+            message, speaker,
         )
         base = f"http://{self._host}:{self._port}"
         session = async_get_clientsession(self.hass)
@@ -85,5 +86,5 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
             _LOGGER.error("VOICEVOX API error: %r", exc)
             return None, None
 
-        _LOGGER.info("VOICEVOX TTS audio ready: %d bytes", len(audio))
+        _LOGGER.warning("[VOICEVOX TTS] synthesis done: %d bytes", len(audio))
         return "wav", audio
