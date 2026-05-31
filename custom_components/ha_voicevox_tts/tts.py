@@ -33,6 +33,10 @@ class VoicevoxTTSEntity(TextToSpeechEntity):
         self._attr_name = f"VOICEVOX TTS ({self._host}:{self._port})"
 
     @property
+    def state(self) -> str:
+        return super().state or "idle"
+
+    @property
     def supported_languages(self) -> list[str]:
         return ["ja", "ja-JP"]
 
