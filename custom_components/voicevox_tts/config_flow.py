@@ -1,13 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import aiohttp
 import voluptuous as vol
 from homeassistant import config_entries
-
-if TYPE_CHECKING:
-    from homeassistant.components.zeroconf import ZeroconfServiceInfo
 
 DOMAIN = "voicevox_tts"
 
@@ -27,30 +22,8 @@ class VoicevoxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     def __init__(self) -> None:
-        self._host: str = "127.0.0.1"
+        self._host: str = "c450e419-voiceboxengine"
         self._port: int = 50021
-
-    async def async_step_zeroconf(self, discovery_info: ZeroconfServiceInfo):
-        self._host = discovery_info.host
-        self._port = discovery_info.port
-        await self.async_set_unique_id(f"{self._host}:{self._port}")
-        self._abort_if_unique_id_configured()
-        self.context["title_placeholders"] = {"host": self._host}
-        return await self.async_step_zeroconf_confirm()
-
-    async def async_step_zeroconf_confirm(self, user_input=None):
-        if user_input is not None:
-            return self.async_create_entry(
-                title=f"VOICEVOX Engine ({self._host}:{self._port})",
-                data={"host": self._host, "port": self._port, "speaker": user_input["speaker"]},
-            )
-        return self.async_show_form(
-            step_id="zeroconf_confirm",
-            description_placeholders={"host": self._host, "port": str(self._port)},
-            data_schema=vol.Schema({
-                vol.Required("speaker", default=10): vol.Coerce(int),
-            }),
-        )
 
     async def async_step_user(self, user_input=None):
         errors: dict[str, str] = {}
@@ -67,7 +40,7 @@ class VoicevoxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             errors=errors,
             data_schema=vol.Schema({
-                vol.Required("host", default="127.0.0.1"): str,
+                vol.Required("host", default="c450e419-voiceboxengine"): str,
                 vol.Required("port", default=50021): int,
                 vol.Required("speaker", default=10): vol.Coerce(int),
             }),
