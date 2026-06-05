@@ -4,7 +4,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-DOMAIN = "ha_voicevox_tts"
+DOMAIN = "voicevox_tts"
 PLATFORMS = [Platform.TTS]
 
 _LOGGER = logging.getLogger(__name__)

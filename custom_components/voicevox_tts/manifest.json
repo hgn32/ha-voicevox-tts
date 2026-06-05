@@ -1,5 +1,5 @@
 {
-  "domain": "ha_voicevox_tts",
+  "domain": "voicevox_tts",
   "name": "VOICEVOX TTS",
   "codeowners": ["@hgn32"],
   "config_flow": true,

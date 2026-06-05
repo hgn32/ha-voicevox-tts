@@ -9,7 +9,7 @@ from homeassistant import config_entries
 if TYPE_CHECKING:
     from homeassistant.components.zeroconf import ZeroconfServiceInfo
 
-DOMAIN = "ha_voicevox_tts"
+DOMAIN = "voicevox_tts"
 
 
 async def _test_connection(host: str, port: int) -> bool:
